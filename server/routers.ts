@@ -29,7 +29,7 @@ function createTransporter() {
 // ─── Gemini 3 Flash — direct REST integration (no SDK needed) ───────────────
 // API key is stored securely as GEMINI_API_KEY environment variable.
 // On self-hosted servers, set it in your .env file.
-const GEMINI_MODEL = "gemini-1.5-flash";
+const GEMINI_MODEL = "gemini-3-flash-preview";
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 // ─── System prompt for the AI portfolio assistant ──────────────────────────

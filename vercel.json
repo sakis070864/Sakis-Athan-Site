@@ -2,11 +2,6 @@
   "version": 2,
   "framework": "vite",
   "outputDirectory": "dist/public",
-  "functions": {
-    "api/**/*.ts": {
-      "includeFiles": "{server,drizzle,shared}/**"
-    }
-  },
   "rewrites": [
     {
       "source": "/api/(.*)",

@@ -1,33 +1,16 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { setupExpressApp } from '../server/_core/app';
 
 /**
  * Sakis Athan Portfolio - Vercel Serverless Entry Point
+ * Statically imported to ensure Vercel's bundler traces all backend dependencies correctly.
  */
 
 let cachedApp: any = null;
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.url === '/api/health' || req.url === '/api/health/') {
-    try {
-      if (!cachedApp) {
-        const { setupExpressApp } = await import("../server/_core/app");
-        cachedApp = setupExpressApp();
-      }
-      return cachedApp(req, res);
-    } catch (err: any) {
-      return res.status(500).json({
-        status: "error",
-        source: "vercel-entry-point-diagnostics",
-        message: err.message,
-        hint: "Dynamic import failed. Check Vercel logs.",
-        stack: err.stack
-      });
-    }
-  }
-
+export default function handler(req: VercelRequest, res: VercelResponse) {
   try {
     if (!cachedApp) {
-      const { setupExpressApp } = await import("../server/_core/app");
       cachedApp = setupExpressApp();
     }
     return cachedApp(req, res);

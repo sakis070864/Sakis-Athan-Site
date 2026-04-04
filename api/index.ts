@@ -1,12 +1,13 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { setupExpressApp } from '../server/_core/app';
 
 /**
  * Sakis Athan Portfolio - Vercel Serverless Entry Point
  * 
- * Optimized for resilience:
- * 1. Lazy-loads the main Express app to isolate initialization errors.
- * 2. Provides a dedicated health-check path that works even if the main app fails.
- * 3. Guarantees JSON error responses to prevent tRPC client parsing errors (Unexpected token 'A').
+ * We MUST use static imports at the top level. If we use dynamic `await import()`,
+ * Vercel's Edge/Node static analyzer (@vercel/nft) cannot detect that the `server/`, 
+ * `shared/`, and `drizzle/` directories are dependencies of this file, and will 
+ * prune them from the final deployment bundle, resulting in "Cannot find module" errors.
  */
 
 let cachedApp: any = null;
@@ -15,9 +16,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // 1. Immediate diagnostics for health check
   if (req.url === '/api/health' || req.url === '/api/health/') {
     try {
-      const { setupExpressApp } = await import("../server/_core/app");
-      const app = setupExpressApp();
-      return app(req, res);
+      if (!cachedApp) {
+        cachedApp = setupExpressApp();
+      }
+      return cachedApp(req, res);
     } catch (err: any) {
       return res.status(500).json({
         status: "error",
@@ -32,7 +34,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // 2. Standard Request Handling with Error Boundary
   try {
     if (!cachedApp) {
-      const { setupExpressApp } = await import("../server/_core/app");
       cachedApp = setupExpressApp();
     }
     return cachedApp(req, res);

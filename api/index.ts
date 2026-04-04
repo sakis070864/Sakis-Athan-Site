@@ -1,5 +1,3 @@
-import { setupExpressApp } from "../server/_core/index.js";
+import { setupExpressApp } from "../server/_core/index";
 
-const app = setupExpressApp();
-
-export default app;
+export default setupExpressApp();

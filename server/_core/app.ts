@@ -13,11 +13,15 @@ export function setupExpressApp() {
 
   app.use(express.json());
 
-  // Simple, stable health check
+  // Simple, stable health check with basic diagnostics
   app.get("/api/health", (req, res) => {
     res.status(200).json({ 
       status: "ok", 
       env: process.env.NODE_ENV || "production",
+      database: !!process.env.DATABASE_URL,
+      gemini: !!process.env.GEMINI_API_KEY,
+      gmail: !!process.env.GMAIL_APP_PASSWORD,
+      oauth: !!process.env.OAUTH_SERVER_URL,
       deployed_at: new Date().toISOString()
     });
   });

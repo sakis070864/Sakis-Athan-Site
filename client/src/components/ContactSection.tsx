@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { Mail, MapPin, Linkedin, Send, CheckCircle, Loader2, ShieldCheck } from "lucide-react";
-import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import HumanVerifyChallenge from "./HumanVerifyChallenge";
 
@@ -41,20 +40,10 @@ export default function ContactSection() {
 
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [isPending, setIsPending] = useState(false);
 
   // Bot protection state
   const [challengeOpen, setChallengeOpen] = useState(false);
-
-  const sendContact = trpc.contact.send.useMutation({
-    onSuccess: () => {
-      setSubmitted(true);
-      setForm({ name: "", email: "", subject: "", message: "" });
-      toast.success("Message sent! I'll get back to you soon.");
-    },
-    onError: (err: { message?: string }) => {
-      toast.error(err.message || "Failed to send message. Please try again.");
-    },
-  });
 
   /** Step 1: Validate form fields, then open the human challenge */
   const handleSubmitClick = (e: React.FormEvent) => {
@@ -68,9 +57,25 @@ export default function ContactSection() {
   };
 
   /** Step 2: Called only after the human challenge is passed */
-  const handleVerified = () => {
+  const handleVerified = async () => {
     setChallengeOpen(false);
-    sendContact.mutate(form);
+    setIsPending(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to send message.");
+      setSubmitted(true);
+      setForm({ name: "", email: "", subject: "", message: "" });
+      toast.success("Message sent! I'll get back to you soon.");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to send message. Please try again.");
+    } finally {
+      setIsPending(false);
+    }
   };
 
   return (
@@ -294,10 +299,10 @@ export default function ContactSection() {
                   {/* Send button — triggers challenge, not direct submit */}
                   <button
                     type="submit"
-                    disabled={sendContact.isPending}
+                    disabled={isPending}
                     className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200 glow-cyan"
                   >
-                    {sendContact.isPending ? (
+                    {isPending ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
                         Sending...

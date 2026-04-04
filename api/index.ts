@@ -109,6 +109,89 @@ const chatHandler = async (req: any, res: any) => {
   }
 };
 
+// --- CONTACT HANDLER (Nodemailer + Gmail SMTP) ---
+const nodemailer = require("nodemailer");
+
+const contactHandler = async (req: any, res: any) => {
+  try {
+    const { name, email, subject, message } = req.body;
+
+    // Validate required fields
+    if (!name || !email || !message) {
+      return res.status(400).json({ error: "Name, email, and message are required." });
+    }
+
+    const appPassword = process.env.GMAIL_APP_PASSWORD;
+    if (!appPassword) {
+      throw new Error("GMAIL_APP_PASSWORD environment variable is not set");
+    }
+
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: "mastorematas@gmail.com",
+        pass: appPassword,
+      },
+    });
+
+    // HTML email body
+    const htmlBody = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0d1117; color: #e6edf3; padding: 32px; border-radius: 12px; border: 1px solid #30363d;">
+        <div style="border-bottom: 2px solid #00e5ff; padding-bottom: 16px; margin-bottom: 24px;">
+          <h2 style="margin: 0; color: #00e5ff; font-size: 20px;">&#128233; New Contact Form Message</h2>
+          <p style="margin: 4px 0 0; color: #8b949e; font-size: 13px;">From your portfolio website — sakisathan.com</p>
+        </div>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
+          <tr><td style="padding: 8px 0; color: #8b949e; width: 80px;">From</td><td style="padding: 8px 0; font-weight: bold;">${name}</td></tr>
+          <tr><td style="padding: 8px 0; color: #8b949e;">Email</td><td style="padding: 8px 0;"><a href="mailto:${email}" style="color: #00e5ff;">${email}</a></td></tr>
+          <tr><td style="padding: 8px 0; color: #8b949e;">Subject</td><td style="padding: 8px 0;">${subject || "(no subject)"}</td></tr>
+        </table>
+        <div style="background: #161b22; border-radius: 8px; padding: 20px; border-left: 3px solid #00e5ff;">
+          <p style="margin: 0 0 8px; color: #8b949e; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Message</p>
+          <p style="margin: 0; line-height: 1.7; white-space: pre-wrap;">${message.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+        </div>
+        <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #30363d; text-align: center;">
+          <a href="mailto:${email}" style="display: inline-block; background: #00e5ff; color: #0d1117; padding: 10px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px;">Reply to ${name}</a>
+        </div>
+      </div>
+    `;
+
+    // Plain-text fallback
+    const textBody = [
+      "New contact form message from sakisathan.com",
+      "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+      `From:    ${name}`,
+      `Email:   ${email}`,
+      `Subject: ${subject || "(no subject)"}`,
+      "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+      "",
+      message,
+      "",
+      `Reply directly to: ${email}`,
+    ].join("\n");
+
+    await transporter.sendMail({
+      from: `"Portfolio Contact Form" <mastorematas@gmail.com>`,
+      to: "sakis@sakisathan.com",
+      replyTo: `"${name}" <${email}>`,
+      subject: "ATHANASIOS Site Contact form",
+      text: textBody,
+      html: htmlBody,
+    });
+
+    console.log(`[Contact] Email sent from ${name} <${email}>`);
+    return res.json({ success: true });
+  } catch (error: any) {
+    console.error("[Contact API Error]:", error);
+    return res.status(500).json({
+      error: "Failed to send message",
+      message: error?.message || "Please try again or contact me directly at sakis@sakisathan.com.",
+    });
+  }
+};
+
 // --- APP INITIALIZATION ---
 const app = express();
 app.use(express.json());
@@ -116,12 +199,16 @@ app.use(express.json());
 // Main Chat Endpoint
 app.post("/api/chat", chatHandler);
 
+// Contact Form Endpoint (Nodemailer + Gmail SMTP)
+app.post("/api/contact", contactHandler);
+
 // Health Check Endpoint (Direct within API function)
 app.get("/api/health", (req: any, res: any) => {
   res.status(200).json({ 
     status: "ok", 
     mode: "standalone_vercel_function_cjs",
     gemini_configured: !!process.env.GEMINI_API_KEY,
+    gmail_configured: !!process.env.GMAIL_APP_PASSWORD,
     deployed_at: new Date().toISOString()
   });
 });

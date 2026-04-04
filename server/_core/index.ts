@@ -1,75 +1,46 @@
-import "dotenv/config";
-import express from "express";
-import { createServer } from "http";
-import net from "net";
-import { createExpressMiddleware } from "@trpc/server/adapters/express";
-import { registerOAuthRoutes } from "./oauth";
-import { appRouter } from "../routers";
-import { createContext } from "./context";
+import { createServer } from "node:http";
+import { setupExpressApp } from "./app";
 
-
-function isPortAvailable(port: number): Promise<boolean> {
-  return new Promise(resolve => {
-    const server = net.createServer();
-    server.listen(port, () => {
-      server.close(() => resolve(true));
-    });
-    server.on("error", () => resolve(false));
-  });
-}
-
-async function findAvailablePort(startPort: number = 3000): Promise<number> {
-  for (let port = startPort; port < startPort + 20; port++) {
-    if (await isPortAvailable(port)) {
-      return port;
-    }
-  }
-  throw new Error(`No available port found starting from ${startPort}`);
-}
-
-export function setupExpressApp() {
-  const app = express();
-  // Configure body parser with larger size limit for file uploads
-  app.use(express.json({ limit: "50mb" }));
-  app.use(express.urlencoded({ limit: "50mb", extended: true }));
-  // OAuth callback under /api/oauth/callback
-  registerOAuthRoutes(app);
-  // tRPC API
-  app.use(
-    "/api/trpc",
-    createExpressMiddleware({
-      router: appRouter,
-      createContext,
-    })
-  );
-  return app;
-}
-
+/**
+ * Local development server entry point.
+ * This file is NOT imported by Vercel.
+ */
 async function startServer() {
   const app = setupExpressApp();
   const server = createServer(app);
-  // development mode uses Vite, production mode uses static files
-  if (process.env.NODE_ENV === "development") {
-    const { setupVite } = await import("./vite");
-    await setupVite(app, server);
+  const port = process.env.PORT || 3000;
+
+  // In development, handle Vite setup and static serving
+  if (process.env.NODE_ENV !== "production") {
+    try {
+      const { setupVite, serveStatic } = await import("./vite");
+      setupVite(app, server);
+      serveStatic(app);
+      console.log(`[DEV] Vite middleware and static serving initialized.`);
+    } catch (err) {
+      console.warn(`[DEV] Could not load Vite: ${err instanceof Error ? err.message : String(err)}`);
+    }
   } else {
-    const { serveStatic } = await import("./vite");
-    serveStatic(app);
-  }
-
-  const preferredPort = parseInt(process.env.PORT || "3000");
-  const port = await findAvailablePort(preferredPort);
-
-  if (port !== preferredPort) {
-    console.log(`Port ${preferredPort} is busy, using port ${port} instead`);
+    // If running node server manually, still need to serve static files
+    try {
+      const { serveStatic } = await import("./vite");
+      serveStatic(app);
+      console.log(`[PROD] Static serving initialized.`);
+    } catch (err) {
+      console.error(`[PROD] Failed to load serveStatic: ${err instanceof Error ? err.message : String(err)}`);
+    }
   }
 
   server.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}/`);
+    console.log(`[Server] Listening on http://localhost:${port}`);
   });
 }
 
-// On Vercel, we just want to export the app without listening to a port.
+// Start the server only if this file is run directly (local development)
 if (!process.env.VERCEL) {
-  startServer().catch(console.error);
+  startServer().catch((err) => {
+    console.error(`[Server Start Failed] ${err instanceof Error ? err.message : String(err)}`);
+  });
 }
+
+export { setupExpressApp };

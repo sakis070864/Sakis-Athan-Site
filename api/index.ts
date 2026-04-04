@@ -3,22 +3,31 @@ import path from "path";
 
 let cachedApp: any = null;
 
-export default async function handler(req: any, res: any) {
+async function handler(req: any, res: any) {
   try {
     if (!cachedApp) {
-// We statically import the CJS bundle so Vercel NFT traces its inner dependencies (like express)
+      const appPath = path.join(__dirname, "../dist/app.js");
       // @ts-ignore
-      const appModule = require("../dist/app.js");
+      const appModule = require(appPath);
       cachedApp = appModule.setupExpressApp();
     }
     return cachedApp(req, res);
   } catch (error: any) {
     console.error("Vercel Function Runtime Error:", error);
-    return res.status(500).json({
-      error: "Internal Server Error",
-      message: error.message || "A critical error occurred during initialization.",
-      code: "FUNCTION_INITIALIZATION_FAILED",
-      stack: error.stack
-    });
+    try {
+      res.status(500).json({
+        error: "Internal Server Error",
+        message: error.message || "A critical error occurred during initialization.",
+        code: "FUNCTION_INITIALIZATION_FAILED",
+        stack: error.stack
+      });
+    } catch(e) {
+      // Fallback if express response methods fail
+      res.end(`{"error":"Critical Error: ${error.message}"}`);
+    }
   }
 }
+
+// Support both ESM default and CommonJS module exports for Vercel
+export default handler;
+module.exports = handler;

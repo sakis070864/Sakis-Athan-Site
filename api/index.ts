@@ -82,7 +82,7 @@ const chatHandler = async (req, res) => {
     const genAI = new GoogleGenerativeAI(apiKey);
     // Explicitly using Gemini 3 Flash as requested
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-3-flash",
+      model: "gemini-3-flash-preview",
       systemInstruction: PORTFOLIO_SYSTEM_PROMPT
     });
 

@@ -1,5 +1,6 @@
 import express from "express";
 import { appRouter } from "../routers";
+import { chatHandler } from "../chat";
 import { createContext } from "./context";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
@@ -27,6 +28,12 @@ export function setupExpressApp() {
   });
 
   registerOAuthRoutes(app);
+
+  /**
+   * Fresh Gemini 3 Flash Chatbot Route
+   * Direct Express POST endpoint for maximum reliability.
+   */
+  app.post("/api/chat", chatHandler);
 
   app.use(
     "/api/trpc",

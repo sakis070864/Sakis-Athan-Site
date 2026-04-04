@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Send, Loader2, Minimize2, Sparkles } from "lucide-react";
-import { trpc } from "@/lib/trpc";
 import { Streamdown } from "streamdown";
 
 interface Message {
@@ -111,24 +110,7 @@ export default function ChatbotWidget() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const sendMessage = trpc.chat.message.useMutation({
-    onSuccess: (data) => {
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: data.content, id: nanoid() },
-      ]);
-    },
-    onError: (err: { message?: string }) => {
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: err.message || "Sorry, I encountered an error. Please try again.",
-          id: nanoid(),
-        },
-      ]);
-    },
-  });
+  const [isPending, setIsPending] = useState(false);
 
   useEffect(() => {
     if (isOpen && !isMinimized) {
@@ -142,20 +124,55 @@ export default function ChatbotWidget() {
     }
   }, [isOpen, isMinimized]);
 
-  const handleSend = (text?: string) => {
+  const handleSend = async (text?: string) => {
     const content = (text ?? input).trim();
-    if (!content || sendMessage.isPending) return;
+    if (!content || isPending) return;
 
     const userMsg: Message = { role: "user", content, id: nanoid() };
     const updatedMessages = [...messages, userMsg];
     setMessages(updatedMessages);
     setInput("");
+    setIsPending(true);
 
-    const history = updatedMessages
-      .filter((m) => m.id !== "welcome")
-      .map((m) => ({ role: m.role, content: m.content }));
+    try {
+      const history = updatedMessages
+        .filter((m) => m.id !== "welcome")
+        .map((m) => ({ role: m.role, content: m.content }));
 
-    sendMessage.mutate({ messages: history });
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: history }),
+      });
+
+      if (!response.ok) {
+        let errorMsg = "Failed to get response from AI";
+        try {
+          const errorData = await response.json();
+          errorMsg = errorData.message || errorMsg;
+        } catch (e) {
+          // Fallback if response isn't JSON
+        }
+        throw new Error(errorMsg);
+      }
+
+      const data = await response.json();
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: data.content, id: nanoid() },
+      ]);
+    } catch (err: any) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: err.message || "Sorry, I encountered an error. Please try again.",
+          id: nanoid(),
+        },
+      ]);
+    } finally {
+      setIsPending(false);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -378,7 +395,7 @@ export default function ChatbotWidget() {
                   ))}
 
                   {/* Loading indicator */}
-                  {sendMessage.isPending && (
+                  {isPending && (
                     <div className="flex justify-start animate-message-in">
                       <div
                         className="w-7 h-7 flex items-center justify-center flex-shrink-0 mr-2 mt-0.5"
@@ -430,16 +447,16 @@ export default function ChatbotWidget() {
                       onChange={(e) => setInput(e.target.value)}
                       onKeyDown={handleKeyDown}
                       placeholder="Ask me anything about Sakis..."
-                      disabled={sendMessage.isPending}
+                      disabled={isPending}
                       className="flex-1 px-3.5 py-2.5 rounded-xl bg-secondary border border-border/60 text-foreground placeholder:text-muted-foreground/50 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all disabled:opacity-60"
                     />
                     <button
                       onClick={() => handleSend()}
-                      disabled={!input.trim() || sendMessage.isPending}
+                      disabled={!input.trim() || isPending}
                       className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex-shrink-0"
                       aria-label="Send message"
                     >
-                      {sendMessage.isPending ? (
+                      {isPending ? (
                         <Loader2 className="w-4 h-4 animate-spin" />
                       ) : (
                         <Send className="w-4 h-4" />

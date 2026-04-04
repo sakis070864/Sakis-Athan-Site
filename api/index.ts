@@ -1,16 +1,20 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { setupExpressApp } from '../server/_core/app';
+import path from "path";
 
 /**
  * Sakis Athan Portfolio - Vercel Serverless Entry Point
- * Statically imported to ensure Vercel's bundler traces all backend dependencies correctly.
+ * Dynamically importing the pre-built backend to bypass @vercel/node bundling crashes.
  */
 
 let cachedApp: any = null;
 
-export default function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     if (!cachedApp) {
+      // Vercel includeFiles "dist/**" puts dist in the Lambda deployment at /var/task/dist
+      // Use __dirname to reliably locate it from /var/task/api
+      const distPath = path.resolve(__dirname, "../dist/index.js");
+      const { setupExpressApp } = await import(distPath);
       cachedApp = setupExpressApp();
     }
     return cachedApp(req, res);

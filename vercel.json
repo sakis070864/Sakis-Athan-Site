@@ -3,8 +3,8 @@
   "framework": "vite",
   "outputDirectory": "dist/public",
   "functions": {
-    "api/**/*.ts": {
-      "includeFiles": "dist/**"
+    "api/index.ts": {
+      "includeFiles": "dist/*"
     }
   },
   "rewrites": [

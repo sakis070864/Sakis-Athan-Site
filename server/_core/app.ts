@@ -15,9 +15,19 @@ export function setupExpressApp() {
   // Basic middleware
   app.use(express.json());
 
-  // Health check for Vercel diagnostics
+  // Deep Health Check for Vercel diagnostics
   app.get("/api/health", (req, res) => {
-    res.json({ status: "ok", environment: process.env.VERCEL ? "production" : "development" });
+    res.json({ 
+      status: "ok", 
+      environment: process.env.VERCEL ? "production" : "development",
+      diagnostics: {
+        hasGeminiKey: !!process.env.GEMINI_API_KEY,
+        hasGmailPassword: !!process.env.GMAIL_APP_PASSWORD,
+        hasDatabaseUrl: !!process.env.DATABASE_URL,
+        nodeVersion: process.version,
+        region: process.env.VERCEL_REGION || "local",
+      }
+    });
   });
 
   // OAuth Routes

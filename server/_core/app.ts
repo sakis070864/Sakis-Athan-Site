@@ -5,42 +5,32 @@ import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 
 /**
- * Initializes the base Express application with all middleware and routes.
- * This function handles NO server-start or Vite logic, making it safe for 
- * Vercel Serverless environment.
+ * Initializes the base Express application.
+ * Optimized for Vercel Serverless environment.
  */
 export function setupExpressApp() {
   const app = express();
 
-  // Basic middleware
   app.use(express.json());
 
-  // Deep Health Check for Vercel diagnostics
+  // Simple, stable health check
   app.get("/api/health", (req, res) => {
-    res.json({ 
+    res.status(200).json({ 
       status: "ok", 
-      environment: process.env.VERCEL ? "production" : "development",
-      diagnostics: {
-        hasGeminiKey: !!process.env.GEMINI_API_KEY,
-        hasGmailPassword: !!process.env.GMAIL_APP_PASSWORD,
-        hasDatabaseUrl: !!process.env.DATABASE_URL,
-        nodeVersion: process.version,
-        region: process.env.VERCEL_REGION || "local",
-      }
+      env: process.env.NODE_ENV || "production",
+      deployed_at: new Date().toISOString()
     });
   });
 
-  // OAuth Routes
   registerOAuthRoutes(app);
 
-  // tRPC Middleware
   app.use(
     "/api/trpc",
     createExpressMiddleware({
       router: appRouter,
       createContext,
       onError: ({ path, error }) => {
-        console.error(`[tRPC Error] Error at path: ${path}. Message: ${error.message}`);
+        console.error(`[tRPC Error] ${path}: ${error.message}`);
       },
     })
   );

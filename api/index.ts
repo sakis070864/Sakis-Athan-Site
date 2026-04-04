@@ -1,5 +1,5 @@
-import express, { Request, Response } from "express";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+const express = require("express");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 // --- SYSTEM PROMPT ---
 const PORTFOLIO_SYSTEM_PROMPT = `You are Sakis's personal AI assistant on his professional portfolio website.
@@ -67,7 +67,7 @@ If asked something outside your knowledge about Sakis, politely say you're not s
 Keep responses concise (2-4 sentences typically) unless a detailed explanation is requested.`;
 
 // --- CHAT HANDLER ---
-const chatHandler = async (req: Request, res: Response) => {
+const chatHandler = async (req, res) => {
   try {
     const { messages } = req.body;
     if (!messages || !Array.isArray(messages)) {
@@ -99,7 +99,7 @@ const chatHandler = async (req: Request, res: Response) => {
     const text = response.text();
 
     return res.json({ content: text });
-  } catch (error: any) {
+  } catch (error) {
     console.error("[Chat API Error]:", error);
     return res.status(500).json({ 
       error: "Internal Server Error",
@@ -120,11 +120,11 @@ app.post("/api/chat", chatHandler);
 app.get("/api/health", (req, res) => {
   res.status(200).json({ 
     status: "ok", 
-    mode: "standalone_vercel_function",
+    mode: "standalone_vercel_function_cjs",
     gemini_configured: !!process.env.GEMINI_API_KEY,
     deployed_at: new Date().toISOString()
   });
 });
 
-// Vercel Entry Point
-export default app;
+// Vercel Entry Point (CommonJS)
+module.exports = app;

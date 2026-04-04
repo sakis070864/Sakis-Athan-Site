@@ -88,7 +88,7 @@ export async function chatHandler(req: Request, res: Response) {
     const ai = getAI();
     // Prioritize Gemini 3 Flash as specifically requested by user.
     // Fallback to Gemini 1.5 Flash if 3 is not yet available in this SDK/Region.
-    const modelName = "gemini-3-flash"; 
+    const modelName = "gemini-3-flash-preview"; 
     const model = ai.getGenerativeModel({ 
       model: modelName,
       systemInstruction: PORTFOLIO_SYSTEM_PROMPT

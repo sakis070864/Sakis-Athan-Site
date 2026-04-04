@@ -67,7 +67,7 @@ If asked something outside your knowledge about Sakis, politely say you're not s
 Keep responses concise (2-4 sentences typically) unless a detailed explanation is requested.`;
 
 // --- CHAT HANDLER ---
-const chatHandler = async (req, res) => {
+const chatHandler = async (req: any, res: any) => {
   try {
     const { messages } = req.body;
     if (!messages || !Array.isArray(messages)) {
@@ -99,11 +99,11 @@ const chatHandler = async (req, res) => {
     const text = response.text();
 
     return res.json({ content: text });
-  } catch (error) {
+  } catch (error: any) {
     console.error("[Chat API Error]:", error);
     return res.status(500).json({ 
       error: "Internal Server Error",
-      message: error.message || "The AI assistant is temporarily unavailable.",
+      message: error?.message || "The AI assistant is temporarily unavailable.",
       code: "AI_SERVICE_ERROR"
     });
   }
@@ -117,7 +117,7 @@ app.use(express.json());
 app.post("/api/chat", chatHandler);
 
 // Health Check Endpoint (Direct within API function)
-app.get("/api/health", (req, res) => {
+app.get("/api/health", (req: any, res: any) => {
   res.status(200).json({ 
     status: "ok", 
     mode: "standalone_vercel_function_cjs",

@@ -96,12 +96,12 @@
 - [x] Checkpoint and publish
 
 ## Email Update
-- [x] Replace mastorematas@gmail.com display email with sakis@sakisathan.com in HeroSection.tsx, ContactSection.tsx, Footer.tsx
+- [x] Replace mastorematas@gmail.com display email with sakis@sakis-athan.com in HeroSection.tsx, ContactSection.tsx, Footer.tsx
 - [x] Keep mastorematas@gmail.com as the contact form recipient in server/routers.ts (unchanged)
 - [x] Checkpoint and publish
 
 ## Contact Form Email Update
-- [x] Update contact form recipient in server/routers.ts to sakis@sakisathan.com (sender stays mastorematas@gmail.com)
+- [x] Update contact form recipient in server/routers.ts to sakis@sakis-athan.com (sender stays mastorematas@gmail.com)
 - [x] Update GMAIL_APP_PASSWORD secret with new 16-char app password
 - [x] Checkpoint and publish
 

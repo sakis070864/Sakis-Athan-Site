@@ -180,7 +180,7 @@ export default function HeroSection() {
                 <Linkedin className="w-5 h-5" />
               </a>
               <a
-                href="mailto:sakis@sakisathan.com"
+                href="mailto:sakis@sakis-athan.com"
                 className="w-11 h-11 rounded-xl glass border border-border/60 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 transition-all duration-200"
                 aria-label="Email"
               >

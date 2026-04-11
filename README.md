@@ -55,7 +55,7 @@ To deploy:
 ## 📬 Get in Touch
 
 Whether you need a custom AI agent, automated workflow pipelines, or enterprise SaaS development, I'd love to hear about it.
-*   **Email:** sakis@sakisathan.com
+*   **Email:** sakis@sakis-athan.com
 *   **LinkedIn:** [Sakis Athanasopoulos](https://www.linkedin.com/in/sakis-athan/)
 
 ---

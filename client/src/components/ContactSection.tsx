@@ -17,8 +17,8 @@ const CONTACT_INFO = [
   {
     icon: Mail,
     label: "Email",
-    value: "sakis@sakisathan.com",
-    href: "mailto:sakis@sakisathan.com",
+    value: "sakis@sakis-athan.com",
+    href: "mailto:sakis@sakis-athan.com",
   },
   {
     icon: MapPin,

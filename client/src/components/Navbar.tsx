@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Code2 } from "lucide-react";
+import { Menu, X, Code2, Sun, Moon } from "lucide-react";
+import { useTheme } from "../contexts/ThemeContext";
 
 const NAV_LINKS = [
   { label: "Home", href: "#hero" },
@@ -10,6 +11,48 @@ const NAV_LINKS = [
   { label: "Blog", href: "#blog" },
   { label: "Contact", href: "#contact" },
 ];
+
+function ThemeToggle({ className = "" }: { className?: string }) {
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === "dark";
+
+  return (
+    <button
+      id="theme-toggle-btn"
+      onClick={() => toggleTheme?.()}
+      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      className={`relative w-10 h-10 flex items-center justify-center rounded-lg glass border border-border/60
+        hover:border-primary/50 hover:text-primary transition-all duration-200 text-muted-foreground overflow-hidden ${className}`}
+    >
+      <AnimatePresence mode="wait" initial={false}>
+        {isDark ? (
+          <motion.span
+            key="moon"
+            initial={{ rotate: -30, scale: 0.5, opacity: 0 }}
+            animate={{ rotate: 0, scale: 1, opacity: 1 }}
+            exit={{ rotate: 30, scale: 0.5, opacity: 0 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
+            className="absolute inset-0 flex items-center justify-center"
+          >
+            <Moon className="w-5 h-5" />
+          </motion.span>
+        ) : (
+          <motion.span
+            key="sun"
+            initial={{ rotate: 30, scale: 0.5, opacity: 0 }}
+            animate={{ rotate: 0, scale: 1, opacity: 1 }}
+            exit={{ rotate: -30, scale: 0.5, opacity: 0 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
+            className="absolute inset-0 flex items-center justify-center"
+          >
+            <Sun className="w-5 h-5" />
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </button>
+  );
+}
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -95,12 +138,14 @@ export default function Navbar() {
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   activeSection === link.href.replace("#", "")
                     ? "text-primary bg-primary/10"
-                    : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                    : "text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5"
                 }`}
               >
                 {link.label}
               </button>
             ))}
+            {/* Theme toggle */}
+            <ThemeToggle className="ml-1" />
             <a
               href="https://www.linkedin.com/in/sakis-athan/"
               target="_blank"
@@ -111,14 +156,17 @@ export default function Navbar() {
             </a>
           </div>
 
-          {/* Mobile hamburger */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden w-10 h-10 flex items-center justify-center rounded-lg glass text-foreground"
-            aria-label="Toggle menu"
-          >
-            {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
+          {/* Mobile: theme toggle + hamburger */}
+          <div className="md:hidden flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="w-10 h-10 flex items-center justify-center rounded-lg glass text-foreground"
+              aria-label="Toggle menu"
+            >
+              {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -140,7 +188,7 @@ export default function Navbar() {
                   className={`text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
                     activeSection === link.href.replace("#", "")
                       ? "text-primary bg-primary/10"
-                      : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                      : "text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5"
                   }`}
                 >
                   {link.label}

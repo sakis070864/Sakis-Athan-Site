@@ -11,6 +11,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShieldCheck, X, AlertCircle, RefreshCw } from "lucide-react";
+import { useTheme } from "../contexts/ThemeContext";
 
 // ─── Challenge Question Pool ──────────────────────────────────────────────────
 // Each question has a `question` string and an array of accepted `answers`
@@ -91,6 +92,8 @@ export default function HumanVerifyChallenge({
   const [attempts, setAttempts] = useState(0);
   const [shaking, setShaking] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   // Reset state whenever modal opens with a fresh random question
   useEffect(() => {
@@ -169,9 +172,11 @@ export default function HumanVerifyChallenge({
             <div
               className="w-full max-w-sm pointer-events-auto rounded-2xl border border-primary/25 p-6 shadow-2xl"
               style={{
-                background: "rgba(10, 18, 28, 0.92)",
+                background: isDark ? "rgba(10, 18, 28, 0.92)" : "rgba(255, 255, 255, 0.96)",
                 backdropFilter: "blur(20px)",
-                boxShadow: "0 0 0 1px rgba(0,229,229,0.08), 0 24px 64px rgba(0,0,0,0.7), 0 0 40px rgba(0,229,229,0.08)",
+                boxShadow: isDark
+                  ? "0 0 0 1px rgba(0,229,229,0.08), 0 24px 64px rgba(0,0,0,0.7), 0 0 40px rgba(0,229,229,0.08)"
+                  : "0 0 0 1px rgba(0,120,120,0.12), 0 24px 64px rgba(0,0,0,0.15), 0 0 40px rgba(0,120,120,0.06)",
               }}
             >
               {/* Header */}
@@ -180,11 +185,15 @@ export default function HumanVerifyChallenge({
                   <div
                     className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
                     style={{
-                      background: "linear-gradient(145deg, #00e5e5 0%, #007e7e 100%)",
-                      boxShadow: "0 4px 14px rgba(0,229,229,0.4)",
+                      background: isDark
+                        ? "linear-gradient(145deg, #00e5e5 0%, #007e7e 100%)"
+                        : "linear-gradient(145deg, #007e7e 0%, #005a5a 100%)",
+                      boxShadow: isDark
+                        ? "0 4px 14px rgba(0,229,229,0.4)"
+                        : "0 4px 14px rgba(0,90,90,0.35)",
                     }}
                   >
-                    <ShieldCheck className="w-5 h-5 text-black" />
+                    <ShieldCheck className="w-5 h-5 text-white" />
                   </div>
                   <div>
                     <h3 className="text-base font-bold text-foreground">Human Verification</h3>
@@ -195,7 +204,7 @@ export default function HumanVerifyChallenge({
                 </div>
                 <button
                   onClick={onClose}
-                  className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-white/10 transition-colors"
+                  className={`w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors ${isDark ? "hover:bg-white/10" : "hover:bg-black/10"}`}
                   aria-label="Close verification"
                 >
                   <X className="w-4 h-4" />
@@ -209,8 +218,8 @@ export default function HumanVerifyChallenge({
               <div
                 className="rounded-xl p-4 mb-4"
                 style={{
-                  background: "rgba(0,229,229,0.06)",
-                  border: "1px solid rgba(0,229,229,0.15)",
+                  background: isDark ? "rgba(0,229,229,0.06)" : "rgba(0,120,120,0.07)",
+                  border: isDark ? "1px solid rgba(0,229,229,0.15)" : "1px solid rgba(0,120,120,0.18)",
                 }}
               >
                 <p className="text-xs font-medium text-primary/70 uppercase tracking-widest mb-1.5">
@@ -293,12 +302,16 @@ export default function HumanVerifyChallenge({
                     background:
                       status === "success"
                         ? "linear-gradient(135deg, #10b981, #059669)"
-                        : "linear-gradient(135deg, #00e5e5 0%, #00a0a0 100%)",
-                    color: "#000",
+                        : isDark
+                        ? "linear-gradient(135deg, #00e5e5 0%, #00a0a0 100%)"
+                        : "linear-gradient(135deg, #007e7e 0%, #005a5a 100%)",
+                    color: isDark ? "#000" : "#fff",
                     boxShadow:
                       status === "success"
                         ? "0 4px 16px rgba(16,185,129,0.4)"
-                        : "0 4px 16px rgba(0,229,229,0.35)",
+                        : isDark
+                        ? "0 4px 16px rgba(0,229,229,0.35)"
+                        : "0 4px 16px rgba(0,90,90,0.25)",
                   }}
                 >
                   {status === "success" ? "✓ Verified!" : "Verify & Send"}

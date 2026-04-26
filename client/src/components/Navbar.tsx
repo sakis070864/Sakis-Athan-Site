@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Code2, Sun, Moon } from "lucide-react";
+import { Menu, X, Code2, Sun, Moon, ShieldCheck } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
 
 const NAV_LINKS = [
@@ -147,10 +147,19 @@ export default function Navbar() {
             {/* Theme toggle */}
             <ThemeToggle className="ml-1" />
             <a
+              href="https://scan.sakis-athan.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-2 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all duration-200 flex items-center gap-1.5"
+            >
+              <ShieldCheck className="w-4 h-4" />
+              Check Your Website
+            </a>
+            <a
               href="https://www.linkedin.com/in/sakis-athan/"
               target="_blank"
               rel="noopener noreferrer"
-              className="ml-2 px-4 py-2 rounded-lg text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-200 glow-cyan"
+              className="ml-1 px-4 py-2 rounded-lg text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-200 glow-cyan"
             >
               LinkedIn
             </a>
@@ -195,10 +204,19 @@ export default function Navbar() {
                 </button>
               ))}
               <a
+                href="https://scan.sakis-athan.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors flex items-center gap-2"
+              >
+                <ShieldCheck className="w-4 h-4" />
+                Check Your Website
+              </a>
+              <a
                 href="https://www.linkedin.com/in/sakis-athan/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-2 px-4 py-3 rounded-lg text-sm font-semibold bg-primary text-primary-foreground text-center"
+                className="mt-1 px-4 py-3 rounded-lg text-sm font-semibold bg-primary text-primary-foreground text-center"
               >
                 LinkedIn Profile
               </a>

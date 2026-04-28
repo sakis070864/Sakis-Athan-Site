@@ -1,4 +1,5 @@
-import { Heart, Linkedin, Mail, Code2 } from "lucide-react";
+import { Heart, Linkedin, Mail, Code2, Shield } from "lucide-react";
+import { Link } from "wouter";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -17,12 +18,21 @@ export default function Footer() {
             </span>
           </div>
 
-          {/* Copyright */}
-          <p className="text-muted-foreground text-sm flex items-center gap-1.5">
-            © {year} · Built with{" "}
-            <Heart className="w-3.5 h-3.5 text-primary inline" />
-            {" "}& AI
-          </p>
+          {/* Copyright + Privacy */}
+          <div className="flex flex-col items-center gap-2">
+            <p className="text-muted-foreground text-sm flex items-center gap-1.5">
+              © {year} · Built with{" "}
+              <Heart className="w-3.5 h-3.5 text-primary inline" />
+              {" "}& AI
+            </p>
+            <Link
+              href="/privacy"
+              className="flex items-center gap-1.5 text-muted-foreground/70 text-xs hover:text-primary transition-colors"
+            >
+              <Shield className="w-3 h-3" />
+              Privacy Policy
+            </Link>
+          </div>
 
           {/* Social links */}
           <div className="flex items-center gap-3">

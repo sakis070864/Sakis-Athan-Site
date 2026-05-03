@@ -39,6 +39,7 @@ export default function ContactSection() {
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
+  const [privacyConsent, setPrivacyConsent] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [isPending, setIsPending] = useState(false);
 
@@ -50,6 +51,10 @@ export default function ContactSection() {
     e.preventDefault();
     if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
       toast.error("Please fill in all required fields.");
+      return;
+    }
+    if (!privacyConsent) {
+      toast.error("Please agree to the Privacy Policy before sending.");
       return;
     }
     // Open the bot-protection challenge instead of submitting directly
@@ -294,6 +299,24 @@ export default function ContactSection() {
                       className="w-full px-4 py-3 rounded-xl bg-secondary border border-border/60 text-foreground placeholder:text-muted-foreground/50 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all resize-none"
                       required
                     />
+                  </div>
+
+                  {/* GDPR Consent Checkbox */}
+                  <div className="flex items-start gap-3">
+                    <input
+                      type="checkbox"
+                      id="privacy-consent"
+                      checked={privacyConsent}
+                      onChange={(e) => setPrivacyConsent(e.target.checked)}
+                      className="mt-1 w-4 h-4 rounded border-border/60 text-primary focus:ring-primary/50 flex-shrink-0 cursor-pointer"
+                    />
+                    <label htmlFor="privacy-consent" className="text-xs text-muted-foreground leading-relaxed cursor-pointer">
+                      I agree that my data will be processed to respond to my inquiry, in accordance with the{" "}
+                      <a href="/privacy" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
+                        Privacy Policy
+                      </a>
+                      . <span className="text-destructive">*</span>
+                    </label>
                   </div>
 
                   {/* Send button — triggers challenge, not direct submit */}

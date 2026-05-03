@@ -1,11 +1,23 @@
-import { ArrowLeft, Shield, Cookie, Eye, UserCheck, Mail } from "lucide-react";
+import { ArrowLeft, Shield, Cookie, Eye, UserCheck, Mail, Bot, Globe, Baby, Scale, FileText } from "lucide-react";
 import { useLocation } from "wouter";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-const LAST_UPDATED = "April 28, 2026";
+const LAST_UPDATED = "May 3, 2026";
 
 const sections = [
+  {
+    icon: Eye,
+    title: "Data Controller",
+    content: `The data controller responsible for the processing of your personal data on this website is:
+
+• **Name**: Athanasios Athanasopoulos
+• **Email**: sakis@sakis-athan.com
+• **Website**: sakis-athan.com
+• **Location**: Athens, Greece (European Union)
+
+If you have any questions about data processing, please contact us using the details above.`,
+  },
   {
     icon: Eye,
     title: "Information We Collect",
@@ -14,60 +26,106 @@ const sections = [
 • **Device & browser information** — such as your browser type, operating system, screen resolution, and language preferences.
 • **Usage data** — pages visited, time spent on site, referring URL, and click interactions.
 • **IP address** — used for approximate geographic location (country/region level only).
-• **LinkedIn Insight Tag data** — we use the LinkedIn Insight Tag to understand how visitors interact with our site after viewing or clicking on our LinkedIn content. This tag may collect URL, referrer, IP address, device and browser characteristics, and timestamp.`,
+• **Contact form submissions** — when you use our contact form, we collect your name, email address, subject, and message content to respond to your inquiry.
+• **AI chatbot conversations** — messages you send through our AI chatbot assistant are processed by Google's Gemini API to generate responses.`,
+  },
+  {
+    icon: Scale,
+    title: "Legal Basis for Processing (GDPR Art. 6)",
+    content: `We process your personal data under the following legal bases:
+
+• **Consent (Art. 6(1)(a))** — for cookies, analytics, and marketing tracking. You provide consent through our cookie consent banner.
+• **Legitimate interest (Art. 6(1)(f))** — for website security, fraud prevention, and improving our services.
+• **Contract performance (Art. 6(1)(b))** — when you contact us through the contact form, we process your data to respond to your inquiry.
+• **Legal obligation (Art. 6(1)(c))** — where required to comply with applicable laws.
+
+You may withdraw your consent at any time by clicking "Do Not Sell My Info" in the footer or managing your cookie preferences.`,
   },
   {
     icon: Cookie,
     title: "Cookies & Tracking Technologies",
     content: `This website uses cookies and similar technologies to enhance your browsing experience and to measure site performance. Specifically:
 
-• **Session cookies** — used to maintain your browsing session and preferences (e.g., theme selection). These are strictly necessary for the site to function.
-• **LinkedIn Insight Tag** — this is a lightweight JavaScript tag that enables LinkedIn conversion tracking, website audience retargeting, and website demographics insights. The tag places a cookie on your browser when you visit this site.
-• **Analytics** — we may use basic analytics to understand traffic patterns and improve the site.
+• **Essential cookies** — used to maintain your browsing session, authentication, and security preferences. These are strictly necessary for the site to function and cannot be disabled.
+• **Functional cookies** — enable features like chat history persistence and theme preferences.
+• **Analytics cookies** — help us understand how visitors interact with the website to improve performance and content.
+• **Marketing cookies** — used for targeted advertising and tracking (if enabled through consent).
 
-You can manage or delete cookies through your browser settings at any time. Disabling cookies may affect some site functionality.`,
+You can manage your cookie preferences at any time through the cookie banner (accessible via the "Do Not Sell My Info" link in the footer). Disabling cookies may affect some site functionality.`,
   },
   {
-    icon: UserCheck,
-    title: "LinkedIn Insight Tag & Third-Party Data Sharing",
-    content: `The LinkedIn Insight Tag is provided by LinkedIn Corporation. When you visit this website, the Insight Tag enables the collection of data regarding your visit, including the URL, referrer, IP address, device and browser characteristics, and timestamp. This data is encrypted, anonymized within seven days, and the anonymized data is deleted within 90 days.
+    icon: Bot,
+    title: "AI & Automated Processing (GDPR Art. 22)",
+    content: `This website features an AI-powered chatbot assistant that uses Google's Gemini API for generating responses. When you use the chatbot:
 
-LinkedIn does not share the personal data with us — it only provides aggregated, anonymized reports about website audiences and ad performance. We do not have access to any personally identifiable information through the LinkedIn Insight Tag.
+• **Data sent**: Your chat messages are sent to Google's servers for processing.
+• **Purpose**: To provide helpful, automated responses about professional services and background.
+• **Third-party**: Google processes this data according to their [Google Cloud Privacy Policy](https://cloud.google.com/terms/cloud-privacy-notice) and [Terms of Service](https://cloud.google.com/terms).
+• **No profiling**: We do not use AI to make automated decisions that have legal or similarly significant effects on you.
+• **Data retention**: Chat conversations are not stored on our servers. They exist only during your browser session.
 
-You can opt out of LinkedIn's data collection by visiting: [LinkedIn Ad Preferences](https://www.linkedin.com/psettings/guest-controls/retargeting-opt-out).
-
-For more details, please review [LinkedIn's Cookie Policy](https://www.linkedin.com/legal/cookie-policy) and [LinkedIn's Privacy Policy](https://www.linkedin.com/legal/privacy-policy).`,
+You have the right not to be subject to automated decision-making. The chatbot is provided for informational purposes only and does not constitute professional advice.`,
   },
   {
     icon: Shield,
     title: "How We Use Your Information",
     content: `We use the information collected to:
 
+• **Respond to inquiries** — process and reply to messages sent through the contact form.
 • **Improve our website** — understand how visitors interact with our content to enhance the user experience.
-• **Measure ad effectiveness** — evaluate the performance of LinkedIn ad campaigns.
-• **Retargeting** — serve relevant ads to website visitors on the LinkedIn platform.
-• **Website demographics** — gain insights into the professional demographics of our site visitors through LinkedIn's anonymized, aggregated reporting.
+• **Ensure security** — protect against unauthorized access, fraud, and abuse.
+• **Provide AI assistance** — power the chatbot with relevant, helpful responses.
 
 We do **not** sell, trade, or rent your personal information to third parties.`,
   },
   {
+    icon: Globe,
+    title: "International Data Transfers",
+    content: `Your data may be transferred to and processed in countries outside the European Economic Area (EEA), specifically:
+
+• **Google (USA)** — AI chatbot data is processed by Google's Gemini API servers, which may be located in the United States.
+• **Vercel (USA)** — our hosting platform, which processes server-side requests.
+
+These transfers are protected by appropriate safeguards, including Standard Contractual Clauses (SCCs) approved by the European Commission, and the EU-US Data Privacy Framework where applicable.
+
+For more information about how these companies protect your data, please refer to their respective privacy policies.`,
+  },
+  {
     icon: Shield,
     title: "Data Retention & Security",
-    content: `We retain collected data only for as long as necessary to fulfill the purposes outlined in this policy. LinkedIn retains Insight Tag data as described in their privacy policy.
+    content: `We retain collected data only for as long as necessary to fulfill the purposes outlined in this policy:
 
-We implement reasonable technical and organizational measures to protect the information collected through this website against unauthorized access, alteration, or destruction.`,
+• **Contact form data** — retained for up to 12 months to manage ongoing correspondence.
+• **Session cookies** — expire when you close your browser or log out.
+• **Analytics data** — retained for up to 26 months in anonymized/aggregated form.
+• **AI chatbot data** — not retained; exists only during your active browser session.
+
+We implement reasonable technical and organizational measures to protect the information collected through this website against unauthorized access, alteration, or destruction, including HTTPS encryption, secure HTTP headers, and access controls.`,
   },
   {
     icon: UserCheck,
     title: "Your Rights",
     content: `Depending on your jurisdiction, you may have the following rights:
 
-• **Right to access** — request a copy of the data we hold about you.
-• **Right to deletion** — request deletion of your personal data.
-• **Right to opt out** — opt out of tracking and targeted advertising.
-• **Right to rectification** — request correction of inaccurate data.
+• **Right to access (GDPR Art. 15)** — request a copy of the data we hold about you.
+• **Right to rectification (Art. 16)** — request correction of inaccurate data.
+• **Right to erasure (Art. 17)** — request deletion of your personal data ("right to be forgotten").
+• **Right to restrict processing (Art. 18)** — request limitation of how we process your data.
+• **Right to data portability (Art. 20)** — receive your data in a structured, machine-readable format.
+• **Right to object (Art. 21)** — object to processing based on legitimate interests.
+• **Right to withdraw consent** — withdraw previously given consent at any time.
+• **CCPA rights** — California residents may request disclosure of collected data categories and opt out of data sales.
 
-To exercise any of these rights, please contact us at the email address below.`,
+To exercise any of these rights, please contact us at sakis@sakis-athan.com. We will respond within 30 days.
+
+You also have the right to lodge a complaint with your local Data Protection Authority (DPA). In Greece, this is the Hellenic Data Protection Authority (HDPA): [www.dpa.gr](https://www.dpa.gr).`,
+  },
+  {
+    icon: Baby,
+    title: "Children's Privacy",
+    content: `This website is not directed at children under the age of 16 (or 13 in certain jurisdictions). We do not knowingly collect personal data from children.
+
+If you are a parent or guardian and believe your child has provided personal data through this website, please contact us at sakis@sakis-athan.com, and we will promptly delete such information.`,
   },
 ];
 

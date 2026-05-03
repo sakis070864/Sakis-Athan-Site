@@ -1,4 +1,4 @@
-import { Heart, Linkedin, Mail, Code2, Shield } from "lucide-react";
+import { Heart, Linkedin, Mail, Code2, Shield, FileText, Scale } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Footer() {
@@ -18,20 +18,42 @@ export default function Footer() {
             </span>
           </div>
 
-          {/* Copyright + Privacy */}
+          {/* Copyright + Legal Links */}
           <div className="flex flex-col items-center gap-2">
             <p className="text-muted-foreground text-sm flex items-center gap-1.5">
               © {year} · Built with{" "}
               <Heart className="w-3.5 h-3.5 text-primary inline" />
               {" "}& AI
             </p>
-            <Link
-              href="/privacy"
-              className="flex items-center gap-1.5 text-muted-foreground/70 text-xs hover:text-primary transition-colors"
-            >
-              <Shield className="w-3 h-3" />
-              Privacy Policy
-            </Link>
+            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+              <Link
+                href="/privacy"
+                className="flex items-center gap-1 text-muted-foreground/70 text-xs hover:text-primary transition-colors"
+              >
+                <Shield className="w-3 h-3" />
+                Privacy Policy
+              </Link>
+              <span className="text-muted-foreground/30 text-xs">·</span>
+              <Link
+                href="/terms"
+                className="flex items-center gap-1 text-muted-foreground/70 text-xs hover:text-primary transition-colors"
+              >
+                <FileText className="w-3 h-3" />
+                Terms of Service
+              </Link>
+              <span className="text-muted-foreground/30 text-xs">·</span>
+              <button
+                onClick={() => {
+                  // Clear cookie consent to re-show the banner
+                  localStorage.removeItem("cookie_consent");
+                  window.location.reload();
+                }}
+                className="flex items-center gap-1 text-muted-foreground/70 text-xs hover:text-primary transition-colors cursor-pointer"
+              >
+                <Scale className="w-3 h-3" />
+                Do Not Sell My Info
+              </button>
+            </div>
           </div>
 
           {/* Social links */}
@@ -58,3 +80,4 @@ export default function Footer() {
     </footer>
   );
 }
+

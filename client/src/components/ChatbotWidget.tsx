@@ -464,7 +464,10 @@ export default function ChatbotWidget() {
                     </button>
                   </div>
                   <p className="text-center text-xs text-muted-foreground/60 mt-2">
-                    Powered by Gemini AI
+                    Powered by Gemini AI ·{" "}
+                    <a href="/privacy" className="hover:text-primary underline">
+                      Messages are processed by Google
+                    </a>
                   </p>
                 </div>
               </>

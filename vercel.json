@@ -33,9 +33,48 @@
         {
           "key": "Content-Security-Policy",
           "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://forge.butterfly-effect.dev; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://forge.butterfly-effect.dev https://generativelanguage.googleapis.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, proxy-revalidate"
+        },
+        {
+          "key": "X-Permitted-Cross-Domain-Policies",
+          "value": "none"
+        },
+        {
+          "key": "Expect-CT",
+          "value": "max-age=86400, enforce"
         }
       ]
     }
+  ],
+  "redirects": [
+    { "source": "/requirements.txt", "destination": "/404", "statusCode": 404 },
+    { "source": "/.env", "destination": "/404", "statusCode": 404 },
+    { "source": "/.env.local", "destination": "/404", "statusCode": 404 },
+    { "source": "/.env.production", "destination": "/404", "statusCode": 404 },
+    { "source": "/id_rsa", "destination": "/404", "statusCode": 404 },
+    { "source": "/.ssh/:path*", "destination": "/404", "statusCode": 404 },
+    { "source": "/.git/:path*", "destination": "/404", "statusCode": 404 },
+    { "source": "/.vscode/:path*", "destination": "/404", "statusCode": 404 },
+    { "source": "/.idea/:path*", "destination": "/404", "statusCode": 404 },
+    { "source": "/sftp-config.json", "destination": "/404", "statusCode": 404 },
+    { "source": "/.dockerignore", "destination": "/404", "statusCode": 404 },
+    { "source": "/Makefile", "destination": "/404", "statusCode": 404 },
+    { "source": "/phpunit.xml", "destination": "/404", "statusCode": 404 },
+    { "source": "/wp-cron.php", "destination": "/404", "statusCode": 404 },
+    { "source": "/setup.php", "destination": "/404", "statusCode": 404 },
+    { "source": "/test.php", "destination": "/404", "statusCode": 404 },
+    { "source": "/.DS_Store", "destination": "/404", "statusCode": 404 },
+    { "source": "/Thumbs.db", "destination": "/404", "statusCode": 404 },
+    { "source": "/wp-content/:path*", "destination": "/404", "statusCode": 404 },
+    { "source": "/LICENSE", "destination": "/404", "statusCode": 404 },
+    { "source": "/debug.log", "destination": "/404", "statusCode": 404 }
   ],
   "functions": {
     "api/index.ts": {
